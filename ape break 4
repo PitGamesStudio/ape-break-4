@@ -1,1 +1,34 @@
 ape break4.apk
+import requests
+from io import BytesIO
+from zipfile import ZipFile
+import os
+
+def download_and_extract_zip(repo_url, zip_filename, extract_path):
+    # Télécharge le fichier ZIP depuis GitHub
+    response = requests.get(repo_url + '/archive/main.zip')
+    
+    # Vérifie si la requête a réussi (code de statut 200)
+    if response.status_code == 200:
+        # Extrait le contenu du fichier ZIP en mémoire
+        zip_file = ZipFile(BytesIO(response.content))
+        
+        # Extrait le contenu du fichier ZIP vers le chemin spécifié
+        zip_file.extractall(extract_path)
+        
+        print(f"Le fichier ZIP a été téléchargé et extrait avec succès dans {extract_path}")
+    else:
+        print(f"Erreur lors du téléchargement du fichier ZIP. Code de statut : {response.status_code}")
+
+if __name__ == "__main__":
+    # Remplacez ces valeurs par celles de votre propre référentiel GitHub
+    github_repo_url = 'https://github.com/votreutilisateur/votreprojet'
+    zip_filename = 'main.zip'
+    extract_path = 'chemin_d_extraction'
+
+    # Crée le dossier d'extraction s'il n'existe pas déjà
+    if not os.path.exists(extract_path):
+        os.makedirs(extract_path)
+
+    # Appelle la fonction pour télécharger et extraire le fichier ZIP
+    download_and_extract_zip(github_repo_url, zip_filename, extract_path)
